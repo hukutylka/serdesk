@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ИТ-служба — подача заявки</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>Заявка в ИТ-службу</h1>
+      <p>Заполните форму — специалист свяжется с вами в удобное время.</p>
+    </header>
+
+    <div id="alert-box" class="alert success" hidden></div>
+
+    <form id="request-form" class="card grid">
+      <div class="autocomplete-wrap">
+        <label for="full_name">ФИО заявителя</label>
+        <input id="full_name" name="full_name" required maxlength="255" autocomplete="name">
+        <div id="autocomplete-list" class="autocomplete-list" hidden></div>
+      </div>
+
+      <div class="grid grid-2">
+        <div>
+          <label for="cabinet">Кабинет</label>
+          <input id="cabinet" name="cabinet" required maxlength="64">
+        </div>
+        <div>
+          <label for="category_id">Категория проблемы</label>
+          <select id="category_id" name="category_id" required></select>
+        </div>
+      </div>
+
+      <div>
+        <label for="description">Подробное описание проблемы</label>
+        <textarea id="description" name="description" required minlength="5"></textarea>
+      </div>
+
+      <div class="grid grid-2">
+        <div>
+          <label for="urgency">Срочность</label>
+          <select id="urgency" name="urgency" required></select>
+        </div>
+        <div>
+          <label for="preferred_visit_time">Удобное время для визита</label>
+          <input id="preferred_visit_time" name="preferred_visit_time" maxlength="255" placeholder="Например: 10:00–12:00">
+        </div>
+      </div>
+
+      <button type="submit">Отправить заявку</button>
+    </form>
+
+    <footer>
+      <a href="/admin">Вход для специалистов</a>
+    </footer>
+  </div>
+
+  <script src="/static/js/public.js"></script>
+</body>
+</html>
