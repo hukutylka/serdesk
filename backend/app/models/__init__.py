@@ -128,12 +128,22 @@ class User(Base):
     password_hash: Mapped[str] = mapped_column(String(255), nullable=False)
     full_name: Mapped[str] = mapped_column(String(255), nullable=False)
     role: Mapped[UserRole] = mapped_column(
-        Enum(UserRole, name="user_role", create_type=False),
+        Enum(
+            UserRole,
+            name="user_role",
+            create_type=False,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+        ),
         default=UserRole.SPECIALIST,
         nullable=False,
     )
     account_status: Mapped[AccountStatus] = mapped_column(
-        Enum(AccountStatus, name="account_status", create_type=False),
+        Enum(
+            AccountStatus,
+            name="account_status",
+            create_type=False,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+        ),
         default=AccountStatus.ACTIVE,
         nullable=False,
     )
@@ -175,7 +185,12 @@ class Request(Base):
     category_id: Mapped[int] = mapped_column(ForeignKey("categories.id"), nullable=False)
     description: Mapped[str] = mapped_column(Text, nullable=False)
     urgency: Mapped[UrgencyLevel] = mapped_column(
-        Enum(UrgencyLevel, name="urgency_level", create_type=False),
+        Enum(
+            UrgencyLevel,
+            name="urgency_level",
+            create_type=False,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+        ),
         default=UrgencyLevel.MEDIUM,
         nullable=False,
     )
@@ -236,7 +251,12 @@ class AuditLog(Base):
     id: Mapped[int] = mapped_column(BigInteger, primary_key=True)
     user_id: Mapped[int | None] = mapped_column(ForeignKey("users.id"))
     action: Mapped[AuditAction] = mapped_column(
-        Enum(AuditAction, name="audit_action", create_type=False),
+        Enum(
+            AuditAction,
+            name="audit_action",
+            create_type=False,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+        ),
         nullable=False,
     )
     entity_type: Mapped[str] = mapped_column(String(64), nullable=False)

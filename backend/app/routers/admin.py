@@ -165,6 +165,7 @@ async def list_users(
     ]
 
 
+@router.post("/users", response_model=UserAdminOut, status_code=status.HTTP_201_CREATED)
 async def create_user(
     payload: UserCreate,
     session: Annotated[AsyncSession, Depends(get_session)],

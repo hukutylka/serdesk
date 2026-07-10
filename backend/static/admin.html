@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ИТ-служба — панель специалиста</title>
+  <link rel="stylesheet" href="/static/css/style.css">
+  <link rel="stylesheet" href="/static/css/admin.css">
+</head>
+<body>
+
+  <!-- Экран входа -->
+  <div id="login-screen" class="login-wrap">
+    <div class="card login-card">
+      <header style="padding:0 0 16px;">
+        <h1 style="font-size:1.5rem;">Вход для специалистов</h1>
+        <p>Введите логин и пароль вашей учётной записи.</p>
+      </header>
+      <div id="login-alert" class="alert error" hidden></div>
+      <form id="login-form" class="grid">
+        <div>
+          <label for="login">Логин</label>
+          <input id="login" name="login" required autocomplete="username">
+        </div>
+        <div>
+          <label for="password">Пароль</label>
+          <input id="password" name="password" type="password" required autocomplete="current-password">
+        </div>
+        <button type="submit">Войти</button>
+      </form>
+      <footer style="margin:16px 0 0;">
+        <a href="/">← Вернуться к форме заявки</a>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Основной интерфейс -->
+  <div id="app-screen" class="admin-layout hidden">
+    <aside class="sidebar">
+      <h2>ИТ-служба</h2>
+      <nav>
+        <button type="button" class="nav-item active" data-view="requests">Заявки</button>
+        <button type="button" class="nav-item" data-view="settings" id="nav-settings" hidden>Настройки</button>
+        <button type="button" id="logout-btn">Выйти</button>
+      </nav>
+      <div style="margin-top:24px; font-size:0.85rem; color:#9ca3af;">
+        <div id="current-user-name">—</div>
+        <div id="current-user-role">—</div>
+      </div>
+    </aside>
+
+    <main class="main-panel">
+
+      <!-- ВИД: Заявки -->
+      <section id="view-requests">
+        <div class="topbar">
+          <h1 style="margin:0; font-size:1.4rem;">Заявки</h1>
+          <input id="search-input" placeholder="Поиск: ФИО, кабинет, № заявки" style="max-width:320px;">
+        </div>
+
+        <div class="stats-grid">
+          <div class="stat-card"><span>Новые</span><strong id="stat-new">—</strong></div>
+          <div class="stat-card"><span>В работе</span><strong id="stat-progress">—</strong></div>
+          <div class="stat-card"><span>Завершено</span><strong id="stat-done">—</strong></div>
+          <div class="stat-card"><span>Среднее время (ч)</span><strong id="stat-avg">—</strong></div>
+        </div>
+
+        <div class="tabs" id="status-tabs">
+          <button type="button" class="tab active" data-status="">Все</button>
+          <!-- вкладки статусов подставляются скриптом -->
+        </div>
+
+        <div class="filters">
+          <select id="filter-category"><option value="">Все категории</option></select>
+          <select id="filter-specialist"><option value="">Все специалисты</option></select>
+          <select id="filter-urgency">
+            <option value="">Любая срочность</option>
+            <option value="low">Низкая</option>
+            <option value="medium">Средняя</option>
+            <option value="high">Высокая</option>
+            <option value="critical">Критическая</option>
+          </select>
+          <select id="filter-sort">
+            <option value="created_at:true">Сначала новые</option>
+            <option value="created_at:false">Сначала старые</option>
+            <option value="urgency:true">По срочности</option>
+          </select>
+        </div>
+
+        <div id="requests-alert" class="alert error" hidden></div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>№</th>
+                <th>Дата</th>
+                <th>Заявитель</th>
+                <th>Кабинет</th>
+                <th>Категория</th>
+                <th>Срочность</th>
+                <th>Статус</th>
+                <th>Специалист</th>
+              </tr>
+            </thead>
+            <tbody id="requests-tbody">
+              <tr><td colspan="8">Загрузка…</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <!-- ВИД: Настройки (только админ) -->
+      <section id="view-settings" class="hidden">
+        <h1 style="margin:0 0 16px; font-size:1.4rem;">Настройки</h1>
+
+        <div class="grid grid-2" style="align-items:start;">
+          <div class="card">
+            <h3 style="margin-top:0;">Категории</h3>
+            <div id="categories-list" class="grid" style="gap:8px; margin-bottom:16px;"></div>
+            <form id="category-form" class="grid" style="grid-template-columns:1fr auto; gap:8px;">
+              <input id="new-category-name" placeholder="Новая категория" required>
+              <button type="submit">Добавить</button>
+            </form>
+          </div>
+
+          <div class="card">
+            <h3 style="margin-top:0;">Статусы</h3>
+            <div id="statuses-list" class="grid" style="gap:8px; margin-bottom:16px;"></div>
+            <form id="status-form" class="grid" style="grid-template-columns:1fr auto; gap:8px;">
+              <input id="new-status-name" placeholder="Новый статус" required>
+              <button type="submit">Добавить</button>
+            </form>
+          </div>
+        </div>
+
+        <div class="card" style="margin-top:16px;">
+          <h3 style="margin-top:0;">Специалисты</h3>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr><th>ФИО</th><th>Логин</th><th>Роль</th><th>Статус</th><th></th></tr>
+              </thead>
+              <tbody id="users-tbody"><tr><td colspan="5">Загрузка…</td></tr></tbody>
+            </table>
+          </div>
+          <form id="user-form" class="grid grid-2" style="margin-top:16px;">
+            <input id="new-user-login" placeholder="Логин" required minlength="3">
+            <input id="new-user-password" placeholder="Пароль" type="password" required minlength="6">
+            <input id="new-user-fullname" placeholder="ФИО" required minlength="2">
+            <select id="new-user-role">
+              <option value="specialist">Специалист</option>
+              <option value="admin">Администратор</option>
+            </select>
+            <button type="submit" style="grid-column:1/-1;">Создать учётную запись</button>
+          </form>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- Модалка заявки -->
+  <div id="request-modal" class="login-wrap hidden" style="position:fixed; inset:0; background:rgba(15,23,42,0.5); z-index:50;">
+    <div class="card" style="width:min(720px, 100%); max-height:90vh; overflow:auto;">
+      <div class="topbar">
+        <h2 id="modal-title" style="margin:0;">Заявка №—</h2>
+        <button type="button" class="secondary" id="modal-close">✕</button>
+      </div>
+      <div id="modal-body" class="detail-grid">
+        <!-- содержимое подставляется скриптом -->
+      </div>
+    </div>
+  </div>
+
+  <script src="/static/js/admin.js"></script>
+</body>
+</html>
